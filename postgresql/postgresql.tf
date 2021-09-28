@@ -29,7 +29,7 @@ resource postgresql_database this {
   for_each = var.db
   #provider = postgresql.tunnel
 
-  owner = postgresql_role.rw[each.key].name
+  owner = lookup(each.value, "master_is_owner", false) ? var.username : postgresql_role.rw[each.key].name
 
   encoding = lookup(each.value, "encoding", lookup(var.defaults, "encoding", "UTF8"))
   lc_collate = lookup(each.value, "lc_collate", lookup(var.defaults, "lc_collate", "C"))

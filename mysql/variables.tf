@@ -40,3 +40,4 @@ variable readonly_db_password {
   type = string
   default = ""
 }
+
