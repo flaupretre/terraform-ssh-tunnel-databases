@@ -3,7 +3,7 @@
 
 module db_tunnel {
   source       = "flaupretre/tunnel/ssh"
-  version      = "1.3.1"
+  version      = "1.4.0"
 #  source       = "/work/terraform-ssh-tunnel"
 
   target_host  = var.target_host
@@ -15,7 +15,7 @@ module db_tunnel {
 
 provider mysql {
   alias    = "tunnel"
-  endpoint = "127.0.0.1:${module.db_tunnel.port}"
+  endpoint = "${module.db_tunnel.host}:${module.db_tunnel.port}"
   username = var.username
   password = var.password
 }

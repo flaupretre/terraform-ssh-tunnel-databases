@@ -3,7 +3,7 @@
 
 module db_tunnel {
   source       = "flaupretre/tunnel/ssh"
-  version      = "1.3.1"
+  version      = "1.4.0"
 #  source       = "/work/terraform-ssh-tunnel"
 
   target_host  = var.target_host
@@ -15,7 +15,7 @@ module db_tunnel {
 
 provider postgresql {
   #alias    = "tunnel"
-  host     = "localhost"
+  host     = module.db_tunnel.host
   port     = module.db_tunnel.port
   username = var.username
   password = var.password
@@ -29,16 +29,12 @@ resource postgresql_database this {
   for_each = var.db
   #provider = postgresql.tunnel
 
+  name     = each.key
   owner = lookup(each.value, "master_is_owner", false) ? var.username : postgresql_role.rw[each.key].name
 
   encoding = lookup(each.value, "encoding", lookup(var.defaults, "encoding", "UTF8"))
   lc_collate = lookup(each.value, "lc_collate", lookup(var.defaults, "lc_collate", "C"))
   lc_ctype = lookup(each.value, "lc_ctype", lookup(var.defaults, "lc_ctype", "C"))
-
-  lifecycle {
-    prevent_destroy = true
-  }
-  name     = each.key
 }
 
 #---- DB user/role
