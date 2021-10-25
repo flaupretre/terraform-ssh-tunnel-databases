@@ -19,25 +19,16 @@ variable password {
   type = string
 }
 
-variable db_name {
-  type = string
-}
-
-variable db_username {
-  type = string
-}
-
-variable db_password {
-  type = string
-}
-
-variable readonly_db_username {
-  type = string
-  default = ""
-}
-
-variable readonly_db_password {
-  type = string
-  default = ""
-}
-
+# Format: map of :
+# <db_name> = {
+#    username =
+#    password =
+#    [ro_username = default is <db_username>_ro
+#    [ro_password =
+#    [master_is_owner (bool)
+#    [encoding
+#    [lc_collate
+#    [lc_ctype
+#    [rw_privileges = ["ALL"]
+#    [ro_privileges = ["SELECT"]
+#  }

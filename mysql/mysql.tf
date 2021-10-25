@@ -24,52 +24,52 @@ provider mysql {
 # SQL: create database xxx;
 
 resource mysql_database this {
+  for_each = var.db
   provider = mysql.tunnel
-  lifecycle {
-    prevent_destroy = true
-  }
 
-  name     = var.db_name
+  name     = each.key
 }
 
 #---- DB user
 # SQL: create user xxx@'%' identified by 'password';
 
 resource mysql_user rw {
+  for_each           = var.db
   provider           = mysql.tunnel
-  user               = var.db_username
+  user               = each.value.username
   host               = "%"
-  plaintext_password = var.db_password
+  plaintext_password = each.value.password
 }
 
 # SQL: grant all on <db>.* to <user>@'%';
 
 resource mysql_grant rw {
+  for_each   = var.db
   provider   = mysql.tunnel
   # This line forces the 'grant' to wait for the user to be ready
-  user       = mysql_user.rw.user
+  user       = mysql_user.rw.user[each.key]
   host       = "%"
-  database   = mysql_database.this.name
-  privileges = ["ALL"]
+  database   = mysql_database.this[each.key].name
+  privileges = lookup(each.value, "rw_privileges", lookup(var.defaults, "rw_privileges", ["ALL"]))
 }
 
 #---- DB user (Readonly)
 
 resource mysql_user ro {
-  count              = (var.readonly_db_username == "" ? 0 : 1)
+  for_each           = var.db
   provider           = mysql.tunnel
-  user               = var.readonly_db_username
+  user               = lookup(each.value, "ro_username", "${each.value.username}_ro")
   host               = "%"
-  plaintext_password = var.readonly_db_password
+  plaintext_password = each.value.ro_password
 }
 
 # SQL: grant select on <db>.* to <readonly_user>@'%';
 
 resource mysql_grant ro {
-  count      = (var.readonly_db_username == "" ? 0 : 1)
+  for_each   = var.db
   provider   = mysql.tunnel
-  user       = mysql_user.ro.0.user
+  user       = mysql_user.ro[each.key].user
   host       = "%"
-  database   = mysql_database.this.name
-  privileges = ["SELECT"]
+  database   = mysql_database.this[each.key].name
+  privileges = lookup(each.value, "ro_privileges", lookup(var.defaults, "ro_privileges", ["SELECT"]))
 }
