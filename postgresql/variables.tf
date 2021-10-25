@@ -29,6 +29,8 @@ variable password {
 #    [encoding
 #    [lc_collate
 #    [lc_ctype
+#    [rw_privileges = ["ALL"]
+#    [ro_privileges = ["SELECT"]
 #  }
 
 variable db {

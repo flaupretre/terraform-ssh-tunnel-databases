@@ -14,7 +14,7 @@ module db_tunnel {
 #----
 
 provider postgresql {
-  #alias    = "tunnel"
+  alias    = "tunnel"
   host     = module.db_tunnel.host
   port     = module.db_tunnel.port
   username = var.username
@@ -27,7 +27,7 @@ provider postgresql {
 
 resource postgresql_database this {
   for_each = var.db
-  #provider = postgresql.tunnel
+  provider = postgresql.tunnel
 
   name     = each.key
   owner = lookup(each.value, "master_is_owner", false) ? var.username : postgresql_role.rw[each.key].name
@@ -41,7 +41,7 @@ resource postgresql_database this {
 
 resource postgresql_role rw {
   for_each = var.db
-  #provider = postgresql.tunnel
+  provider = postgresql.tunnel
 
   name     = each.value.username
   login    = true
@@ -53,19 +53,19 @@ resource postgresql_role rw {
 
 resource postgresql_grant rw {
   for_each = var.db
-  #provider    = postgresql.tunnel
+  provider    = postgresql.tunnel
 
   object_type = "database"
   database    = postgresql_database.this[each.key].name
   role        = postgresql_role.rw[each.key].name
-  privileges  = ["ALL"]
+  privileges  = lookup(each.value, "rw_privileges", lookup(var.defaults, "rw_privileges", ["ALL"]))
 }
 
 #---- DB user (Readonly)
 
 resource postgresql_role ro {
   for_each = var.db
-  #provider = postgresql.tunnel
+  provider = postgresql.tunnel
 
   name     = lookup(each.value, "ro_username", "${each.value.username}_ro")
   login    = true
@@ -76,11 +76,11 @@ resource postgresql_role ro {
 
 resource postgresql_grant ro {
   for_each    = var.db
-  #provider    = postgresql.tunnel
+  provider    = postgresql.tunnel
 
   object_type = "table"
   database    = postgresql_database.this[each.key].name
   schema      = "public"
   role        = postgresql_role.ro[each.key].name
-  privileges  = ["SELECT"]
+  privileges  = lookup(each.value, "ro_privileges", lookup(var.defaults, "ro_privileges", ["SELECT"]))
 }
