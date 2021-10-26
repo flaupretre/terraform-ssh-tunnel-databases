@@ -3,7 +3,7 @@
 
 module db_tunnel {
   source       = "flaupretre/tunnel/ssh"
-  version      = "1.4.0"
+  version      = "1.5.0"
 #  source       = "/work/terraform-ssh-tunnel"
 
   target_host  = var.target_host
