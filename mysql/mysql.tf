@@ -47,7 +47,7 @@ resource mysql_grant rw {
   for_each   = var.db
   provider   = mysql.tunnel
   # This line forces the 'grant' to wait for the user to be ready
-  user       = mysql_user.rw.user[each.key]
+  user       = mysql_user.rw[each.key].user
   host       = "%"
   database   = mysql_database.this[each.key].name
   privileges = lookup(each.value, "rw_privileges", lookup(var.defaults, "rw_privileges", ["ALL"]))

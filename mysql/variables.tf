@@ -32,3 +32,13 @@ variable password {
 #    [rw_privileges = ["ALL"]
 #    [ro_privileges = ["SELECT"]
 #  }
+
+variable db {
+  type = any
+}
+
+variable defaults {
+  type = any
+  default = {}
+}
+
