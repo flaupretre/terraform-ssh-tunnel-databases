@@ -3,6 +3,10 @@ variable gateway_host {
   type = string
 }
 
+variable gateway_user {
+  type = string
+}
+
 variable target_host {
   type = string
 }
