@@ -6,6 +6,7 @@ module db_tunnel {
   version      = "1.6.0"
 #  source       = "/work/terraform-ssh-tunnel"
 
+  create = var.create
   target_host  = var.target_host
   target_port  = var.target_port
   gateway_host = var.gateway_host
@@ -25,7 +26,7 @@ provider mysql {
 # SQL: create database xxx;
 
 resource mysql_database this {
-  for_each = var.db
+  for_each = (var.create ? var.db : {})
   provider = mysql.tunnel
 
   name     = each.key
@@ -35,7 +36,7 @@ resource mysql_database this {
 # SQL: create user xxx@'%' identified by 'password';
 
 resource mysql_user rw {
-  for_each           = var.db
+  for_each           = (var.create ? var.db : {})
   provider           = mysql.tunnel
   user               = each.value.username
   host               = "%"
@@ -45,7 +46,7 @@ resource mysql_user rw {
 # SQL: grant all on <db>.* to <user>@'%';
 
 resource mysql_grant rw {
-  for_each   = var.db
+  for_each   = (var.create ? var.db : {})
   provider   = mysql.tunnel
   # This line forces the 'grant' to wait for the user to be ready
   user       = mysql_user.rw[each.key].user
@@ -57,7 +58,7 @@ resource mysql_grant rw {
 #---- DB user (Readonly)
 
 resource mysql_user ro {
-  for_each           = var.db
+  for_each           = (var.create ? var.db : {})
   provider           = mysql.tunnel
   user               = lookup(each.value, "ro_username", "${each.value.username}_ro")
   host               = "%"
@@ -67,7 +68,7 @@ resource mysql_user ro {
 # SQL: grant select on <db>.* to <readonly_user>@'%';
 
 resource mysql_grant ro {
-  for_each   = var.db
+  for_each   = (var.create ? var.db : {})
   provider   = mysql.tunnel
   user       = mysql_user.ro[each.key].user
   host       = "%"

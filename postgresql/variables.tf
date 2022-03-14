@@ -1,4 +1,9 @@
 
+variable create {
+  type = bool
+  default = true
+}
+
 variable gateway_host {
   type = string
 }

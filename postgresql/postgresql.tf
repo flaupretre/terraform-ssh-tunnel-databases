@@ -6,6 +6,7 @@ module db_tunnel {
   version      = "1.6.0"
 #  source       = "/work/terraform-ssh-tunnel"
 
+  create = var.create
   target_host  = var.target_host
   target_port  = var.target_port
   gateway_host = var.gateway_host
@@ -27,7 +28,7 @@ provider postgresql {
 #---- Database
 
 resource postgresql_database this {
-  for_each = var.db
+  for_each = (var.create ? var.db : {})
   provider = postgresql.tunnel
 
   name     = each.key
@@ -41,7 +42,7 @@ resource postgresql_database this {
 #---- DB user/role
 
 resource postgresql_role rw {
-  for_each = var.db
+  for_each = (var.create ? var.db : {})
   provider = postgresql.tunnel
 
   name     = each.value.username
@@ -53,7 +54,7 @@ resource postgresql_role rw {
 # SQL: grant all on <db>.* to <user>@'%';
 
 resource postgresql_grant rw {
-  for_each = var.db
+  for_each = (var.create ? var.db : {})
   provider    = postgresql.tunnel
 
   object_type = "database"
@@ -65,7 +66,7 @@ resource postgresql_grant rw {
 #---- DB user (Readonly)
 
 resource postgresql_role ro {
-  for_each = var.db
+  for_each = (var.create ? var.db : {})
   provider = postgresql.tunnel
 
   name     = lookup(each.value, "ro_username", "${each.value.username}_ro")
@@ -76,7 +77,7 @@ resource postgresql_role ro {
 #---- Grant (Readonly)
 
 resource postgresql_grant ro {
-  for_each    = var.db
+  for_each    = (var.create ? var.db : {})
   provider    = postgresql.tunnel
 
   object_type = "table"
