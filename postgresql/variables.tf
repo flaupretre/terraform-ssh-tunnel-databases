@@ -6,10 +6,12 @@ variable create {
 
 variable gateway_host {
   type = string
+  default = null
 }
 
 variable gateway_user {
   type = string
+  default = ""
 }
 
 variable target_host {

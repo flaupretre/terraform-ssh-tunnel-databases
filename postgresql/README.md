@@ -28,7 +28,7 @@ definition within a for_each loop).
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_db_tunnel"></a> [db\_tunnel](#module\_db\_tunnel) | flaupretre/tunnel/ssh | 1.6.0 |
+| <a name="module_db_tunnel"></a> [db\_tunnel](#module\_db\_tunnel) | flaupretre/tunnel/ssh | 1.7.0 |
 
 ## Resources
 
@@ -47,8 +47,8 @@ definition within a for_each loop).
 | <a name="input_create"></a> [create](#input\_create) | n/a | `bool` | `true` | no |
 | <a name="input_db"></a> [db](#input\_db) | n/a | `any` | n/a | yes |
 | <a name="input_defaults"></a> [defaults](#input\_defaults) | n/a | `any` | `{}` | no |
-| <a name="input_gateway_host"></a> [gateway\_host](#input\_gateway\_host) | n/a | `string` | n/a | yes |
-| <a name="input_gateway_user"></a> [gateway\_user](#input\_gateway\_user) | n/a | `string` | n/a | yes |
+| <a name="input_gateway_host"></a> [gateway\_host](#input\_gateway\_host) | n/a | `string` | `null` | no |
+| <a name="input_gateway_user"></a> [gateway\_user](#input\_gateway\_user) | n/a | `string` | `""` | no |
 | <a name="input_password"></a> [password](#input\_password) | n/a | `string` | n/a | yes |
 | <a name="input_target_host"></a> [target\_host](#input\_target\_host) | n/a | `string` | n/a | yes |
 | <a name="input_target_port"></a> [target\_port](#input\_target\_port) | n/a | `string` | n/a | yes |

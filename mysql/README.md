@@ -19,7 +19,7 @@ This module creates/manages a MySql database, a user with every permissions on t
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_db_tunnel"></a> [db\_tunnel](#module\_db\_tunnel) | flaupretre/tunnel/ssh | 1.6.0 |
+| <a name="module_db_tunnel"></a> [db\_tunnel](#module\_db\_tunnel) | flaupretre/tunnel/ssh | 1.7.0 |
 
 ## Resources
 

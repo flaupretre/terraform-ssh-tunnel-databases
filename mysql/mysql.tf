@@ -3,7 +3,7 @@
 
 module db_tunnel {
   source       = "flaupretre/tunnel/ssh"
-  version      = "1.6.0"
+  version      = "1.7.0"
 #  source       = "/work/terraform-ssh-tunnel"
 
   create = var.create
@@ -60,7 +60,7 @@ resource mysql_grant rw {
 resource mysql_user ro {
   for_each           = (var.create ? var.db : {})
   provider           = mysql.tunnel
-  user               = lookup(each.value, "ro_username", "${each.value.username}_ro")
+  user               = lookup(each.value, "ro_username", lookup(var.defaults, "ro_username", "${each.value.username}_ro"))
   host               = "%"
   plaintext_password = each.value.ro_password
 }

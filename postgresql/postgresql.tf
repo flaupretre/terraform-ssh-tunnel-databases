@@ -3,7 +3,7 @@
 
 module db_tunnel {
   source       = "flaupretre/tunnel/ssh"
-  version      = "1.6.0"
+  version      = "1.7.0"
 #  source       = "/work/terraform-ssh-tunnel"
 
   create = var.create
@@ -32,7 +32,7 @@ resource postgresql_database this {
   provider = postgresql.tunnel
 
   name     = each.key
-  owner = lookup(each.value, "master_is_owner", false) ? var.username : postgresql_role.rw[each.key].name
+  owner = lookup(each.value, "master_is_owner", lookup(var.defaults, "master_is_owner", false)) ? var.username : postgresql_role.rw[each.key].name
 
   encoding = lookup(each.value, "encoding", lookup(var.defaults, "encoding", "UTF8"))
   lc_collate = lookup(each.value, "lc_collate", lookup(var.defaults, "lc_collate", "C"))
@@ -69,7 +69,7 @@ resource postgresql_role ro {
   for_each = (var.create ? var.db : {})
   provider = postgresql.tunnel
 
-  name     = lookup(each.value, "ro_username", "${each.value.username}_ro")
+  name     = lookup(each.value, "ro_username", lookup(var.defaults, "ro_username", "${each.value.username}_ro"))
   login    = true
   password = each.value.ro_password
 }
