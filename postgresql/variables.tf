@@ -1,9 +1,4 @@
 
-variable create {
-  type = bool
-  default = true
-}
-
 variable gateway_host {
   type = string
   default = null
@@ -32,6 +27,7 @@ variable password {
 
 # Format: map of :
 # <db_name> = {
+#    create = true
 #    username =
 #    password =
 #    [ro_username = default is <db_username>_ro

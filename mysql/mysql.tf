@@ -1,12 +1,23 @@
- 
+
+locals {
+
+  db = { for n,v in var.db :
+    n => merge(var.defaults, v)
+  }
+
+  dbc = { for n,v in local.db : n => v if lookup(v, "create", true) }
+
+  create = (length(local.dbc) != 0)
+}
+
 #----
 
 module db_tunnel {
   source       = "flaupretre/tunnel/ssh"
-  version      = "1.7.0"
+  version      = "1.8.0"
 #  source       = "/work/terraform-ssh-tunnel"
 
-  create = var.create
+  create = local.create
   target_host  = var.target_host
   target_port  = var.target_port
   gateway_host = var.gateway_host
@@ -26,7 +37,7 @@ provider mysql {
 # SQL: create database xxx;
 
 resource mysql_database this {
-  for_each = (var.create ? var.db : {})
+  for_each = local.dbc
   provider = mysql.tunnel
 
   name     = each.key
@@ -36,7 +47,7 @@ resource mysql_database this {
 # SQL: create user xxx@'%' identified by 'password';
 
 resource mysql_user rw {
-  for_each           = (var.create ? var.db : {})
+  for_each           = local.dbc
   provider           = mysql.tunnel
   user               = each.value.username
   host               = "%"
@@ -46,21 +57,21 @@ resource mysql_user rw {
 # SQL: grant all on <db>.* to <user>@'%';
 
 resource mysql_grant rw {
-  for_each   = (var.create ? var.db : {})
+  for_each   = local.dbc
   provider   = mysql.tunnel
   # This line forces the 'grant' to wait for the user to be ready
   user       = mysql_user.rw[each.key].user
   host       = "%"
   database   = mysql_database.this[each.key].name
-  privileges = lookup(each.value, "rw_privileges", lookup(var.defaults, "rw_privileges", ["ALL"]))
+  privileges = lookup(each.value, "rw_privileges", ["ALL"])
 }
 
 #---- DB user (Readonly)
 
 resource mysql_user ro {
-  for_each           = (var.create ? var.db : {})
+  for_each           = local.dbc
   provider           = mysql.tunnel
-  user               = lookup(each.value, "ro_username", lookup(var.defaults, "ro_username", "${each.value.username}_ro"))
+  user               = lookup(each.value, "ro_username", "${each.value.username}_ro")
   host               = "%"
   plaintext_password = each.value.ro_password
 }
@@ -68,10 +79,10 @@ resource mysql_user ro {
 # SQL: grant select on <db>.* to <readonly_user>@'%';
 
 resource mysql_grant ro {
-  for_each   = (var.create ? var.db : {})
+  for_each   = local.dbc
   provider   = mysql.tunnel
   user       = mysql_user.ro[each.key].user
   host       = "%"
   database   = mysql_database.this[each.key].name
-  privileges = lookup(each.value, "ro_privileges", lookup(var.defaults, "ro_privileges", ["SELECT"]))
+  privileges = lookup(each.value, "ro_privileges", ["SELECT"])
 }
