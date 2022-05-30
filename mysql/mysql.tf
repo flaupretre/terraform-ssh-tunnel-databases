@@ -41,6 +41,8 @@ resource mysql_database this {
   provider = mysql.tunnel
 
   name     = each.key
+  default_character_set = lookup(each.value, "default_character_set", "utf8")
+  default_collation     = lookup(each.value, "default_collation", "utf8_general_ci")
 }
 
 #---- DB user

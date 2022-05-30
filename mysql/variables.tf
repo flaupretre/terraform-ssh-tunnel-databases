@@ -1,15 +1,12 @@
 
-variable create {
-  type = bool
-  default = true
-}
-
 variable gateway_host {
   type = string
+  default = null
 }
 
 variable gateway_user {
   type = string
+  default = ""
 }
 
 variable target_host {
@@ -33,6 +30,8 @@ variable password {
 #    [create = true]
 #    username =
 #    password =
+#    [default_character_set = "utf8"]
+#    [default_collation = "utf8_general_ci"]
 #    [ro_username = default is <db_username>_ro
 #    [ro_password =
 #    [rw_privileges = ["ALL"]
