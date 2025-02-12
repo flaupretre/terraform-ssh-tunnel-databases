@@ -9,6 +9,11 @@ variable gateway_user {
   default = ""
 }
 
+variable gateway_port {
+  type = string
+  default = "22"
+}
+
 variable target_host {
   type = string
 }

@@ -22,6 +22,7 @@ module db_tunnel {
   target_port  = var.target_port
   gateway_host = var.gateway_host
   gateway_user = var.gateway_user
+  gateway_port = var.gateway_port
 }
 
 #----

@@ -11,7 +11,7 @@ Using this code as example, it should be very easy to adapt it to any DBMS flavo
 
 - Check access from bastion (`gateway_host`) to database (`target_host:target_port`). Enable Security Group or firewall.
 
-- A SSH certificate recorded at the `~/.ssh/authorized_keys` of the remote user (`gateway_user`) at the bastion (`gateway_host`) to access without passphrase or password to remote host.  Also a passhprase protected certificate recorded to local ssh-agent may be used.
+- A SSH certificate recorded at the `~/.ssh/authorized_keys` of the remote user (`gateway_user`) at the bastion (`gateway_host`) via (`gateway_port`) to access without passphrase or password to remote host.  Also a passhprase protected certificate recorded to local ssh-agent may be used.
 
 - The command `timeout`. MacOS users need to install it with `brew install coreutils`.
 
@@ -25,6 +25,7 @@ module db {
   target_port          = "3306"
   gateway_host         = "IP.OF.YOUR.BASTION"
   gateway_user         = "bastion-user"
+  gateway_port         = "bastion-port"
   username             = "rds-admin-user"
   password             = "rds-admin-password"
   db                   = {
@@ -51,6 +52,7 @@ module pg {
   target_port          = "5432"
   gateway_host         = "IP.OF.YOUR.BASTION"
   gateway_user         = "bastion-user"
+  gateway_port         = "bastion-port"
   username             = "rds-admin-user"
   password             = "rds-admin-password"
   db                   = {
