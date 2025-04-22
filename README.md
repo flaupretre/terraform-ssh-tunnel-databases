@@ -7,7 +7,7 @@ Using this code as example, it should be very easy to adapt it to any DBMS flavo
 
 ### Requirements
 
-- A bation (`gateway_host`) with access to database server (`target_host`).
+- A bastion host (`gateway_host`) with access to the database server (`target_host`).
 
 - Check access from bastion (`gateway_host`) to database (`target_host:target_port`). Enable Security Group or firewall.
 
